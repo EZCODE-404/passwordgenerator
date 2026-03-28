@@ -3,48 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Password Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<style> 
-    body{
+<style>
+    :root {
+        --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --bg-secondary: #f8fafc;
+        --bg-card: #ffffff;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --accent: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --border-radius: 16px;
+        --shadow: 0 20px 25px -5px rgba(0, 0,0, 0.1), 0 10px 10px -5px rgba(0, 0,0, 0.04);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+        --bg-secondary: #0f172a;
+        --bg-card: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #cbd5e1;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--bg-secondary);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        color: var(--text-primary);
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 500px;
+        width: 100%;
         text-align: center;
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin-top: 50px;
     }
-    #passwordDisplay{
-        font-size: 24px;
-        margin: 20px 0;
-        word-break: break-all;
+
+    h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        background: var(--bg-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 2rem;
+        letter-spacing: -0.025em;
     }
-    input{
-        font-size: 18px;
-        padding: 10px;
-        margin: 5px;
-        width: 200px;
+
+    .card {
+        background: var(--bg-card);
+        border-radius: var(--border-radius);
+        padding: 2.5rem;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: var(--transition);
     }
-    button{
-        font-size: 18px;
-        padding: 10px 20px;
-        margin: 5px;
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0,0, 0.25);
+    }
+
+    .controls {
+        text-align: left;
+        margin-bottom: 2rem;
+    }
+
+    .length-control {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .length-control label {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 1rem;
+    }
+
+    input[type="range"] {
+        flex: 1;
+        height: 8px;
+        border-radius: 9999px;
+        background: #e2e8f0;
+        outline: none;
+        -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--accent);
         cursor: pointer;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    input[type="number"] {
+        width: 80px;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 500;
+        text-align: center;
+        transition: var(--transition);
+    }
+
+    input[type="number"]:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .options label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border-radius: 12px;
+        background: rgba(99, 102, 241, 0.05);
+        cursor: pointer;
+        transition: var(--transition);
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .options label:hover {
+        background: rgba(99, 102, 241, 0.1);
+    }
+
+    .options input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--accent);
+    }
+
+    .generate-btn {
+        width: 100%;
+        padding: 1rem 2rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, var(--accent), #8b5cf6);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .generate-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px 0 rgba(99, 102, 241, 0.5);
+    }
+
+    .generate-btn:active {
+        transform: translateY(0);
+    }
+
+    .output {
+        margin-top: 2rem;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .password-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: #f1f5f9;
+        padding: 1.25rem;
+        border-radius: var(--border-radius);
+        border: 2px solid #e2e8f0;
+        margin-bottom: 1rem;
+        min-height: 60px;
+    }
+
+    #passwordDisplay {
+        flex: 1;
+        font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+        font-size: 1.5rem;
+        font-weight: 500;
+        word-break: break-all;
+        color: var(--text-primary);
+        user-select: text;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    #passwordDisplay:hover {
+        color: var(--accent);
+    }
+
+    .copy-btn, .save-btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 0.95rem;
+    }
+
+    .copy-btn {
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
+        color: white;
+    }
+
+    .copy-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+    }
+
+    .save-btn {
+        background: linear-gradient(135deg, var(--success), #059669);
+        color: white;
+        width: 100%;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .save-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    }
+
+    .strength {
+        text-align: left;
+        padding: 1rem;
+        background: rgba(99, 102, 241, 0.05);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .strength-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .strength-bar {
+        height: 6px;
+        background: #e2e8f0;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .strength-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: var(--transition);
+    }
+
+    .strength-weak { background: var(--danger); }
+    .strength-medium { background: var(--warning); }
+    .strength-strong { background: var(--success); }
+
+    @media (max-width: 640px) {
+        .card {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+        
+        .options {
+            grid-template-columns: 1fr;
+        }
+        
+        .length-control {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+        }
     }
 </style>
 <body>
-    <div>
-<h1>random password generator</h1>
- <input type="text" id="length" placeholder="Enter password length" />
-<button id="generate">Generate Password</button>
-<p id="passwordDisplay"></p>    
-
-
-
+    <div class="container">
+        <h1>Password Generator</h1>
+        
+        <div class="card">
+            <input type="number" id="length" min="4" max="128" value="12" placeholder="Enter length">
+            <button id="generate" class="generate-btn">Generate Password</button>
+            <p id="passwordDisplay" class="password-display"></p>
+          
+        </div>
     </div>
 </body>
 <script>
     let passwordDisplay = document.querySelector('#passwordDisplay');
     let lengthInput = document.querySelector('#length');
     let generateButton = document.querySelector('#generate');
+    let saveBtn = document.querySelector('#saveBtn');
     
     function generatePassword(length) {
         const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=";
@@ -65,11 +346,5 @@
         const password = generatePassword(length);
         passwordDisplay.textContent = password;
     });
-
-    savetolocalstorage = () => {
-        const password = passwordDisplay.textContent;
-        localStorage.setItem('generatedPassword', password);
-        alert('Password saved to local storage!');      
-    }
 </script>
 </html>
